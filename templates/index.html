@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ResumAI - Resume Analyzer</title>
+
+</head>
+
+<body>
+
+    <h1>ResumAI</h1>
+    <p>AI-Powered Resume Analyzer</p>
+
+    <hr>
+
+    <h2>Analyse Your Resume</h2>
+
+    <form action="/" method="POST" enctype="multipart/form-data">
+
+        <label>Upload Your Resume (PDF)</label>
+        <br><br>
+
+        <input type="file" name="resume" accept=".pdf" required>
+
+        <br><br>
+
+        <label>Paste Job Description</label>
+        <br><br>
+
+        <textarea name="job_description" rows="10" cols="60" placeholder="Paste the complete job description here..."
+            required></textarea>
+
+        <br><br>
+
+        <button type="submit">Analyse Resume</button>
+
+    </form>
+
+
+    {% if error %}
+
+    <h3>Error</h3>
+    <p>{{ error }}</p>
+
+    {% endif %}
+
+
+    {% if results %}
+
+    <hr>
+
+    <h2>Analysis Results</h2>
+
+    <h3>Skill Coverage Score</h3>
+    <h2>{{ results.match_score }}%</h2>
+
+    <h3>Skills Found in Resume</h3>
+
+    {% for skill in results.resume_skills %}
+    <span>{{ skill }}</span>
+    {% if not loop.last %}, {% endif %}
+    {% else %}
+    <p>No recognised skills found.</p>
+    {% endfor %}
+
+
+    <h3>Matched Skills</h3>
+
+    {% for skill in results.matched_skills %}
+    <p>✓ {{ skill }}</p>
+    {% else %}
+    <p>No matching skills found.</p>
+    {% endfor %}
+
+
+    <h3>Missing Skills</h3>
+
+    {% for skill in results.missing_skills %}
+    <p>• {{ skill }}</p>
+    {% else %}
+    <p>No missing skills detected.</p>
+    {% endfor %}
+
+
+    <hr>
+
+    <h2>AI Recommendations</h2>
+
+    <div style="white-space: pre-wrap;">{{ recommendations }}</div>
+
+    {% endif %}
+
+</body>
+
+</html>
