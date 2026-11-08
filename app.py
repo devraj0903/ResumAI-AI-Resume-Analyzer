@@ -2,10 +2,12 @@ import os
 from flask import Flask, render_template, request
 from werkzeug.utils import secure_filename
 
+import markdown
+from markupsafe import Markup
+
 from resume_parser import extract_resume_text
 from skill_analyzer import analyze_skills
 from ai_recommender import generate_recommendations
-
 
 app = Flask(__name__)
 
@@ -96,6 +98,10 @@ def home():
                 results
             )
 
+            recommendations = Markup(
+                markdown.markdown(recommendations)
+            )
+
             # displays results
             return render_template(
                 "index.html",
@@ -120,4 +126,4 @@ def file_too_large(error):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="127.0.0.1", port=5001, debug=True)

@@ -7,91 +7,299 @@
 
     <title>ResumAI - Resume Analyzer</title>
 
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
 <body>
 
-    <h1>ResumAI</h1>
-    <p>AI-Powered Resume Analyzer</p>
+    <!-- NAVIGATION -->
+    <nav class="navbar">
+        <a href="/" class="logo">Resum<span>AI.</span></a>
 
-    <hr>
-
-    <h2>Analyse Your Resume</h2>
-
-    <form action="/" method="POST" enctype="multipart/form-data">
-
-        <label>Upload Your Resume (PDF)</label>
-        <br><br>
-
-        <input type="file" name="resume" accept=".pdf" required>
-
-        <br><br>
-
-        <label>Paste Job Description</label>
-        <br><br>
-
-        <textarea name="job_description" rows="10" cols="60" placeholder="Paste the complete job description here..."
-            required></textarea>
-
-        <br><br>
-
-        <button type="submit">Analyse Resume</button>
-
-    </form>
+        <div>
+            <span class="nav-caption">AI-POWERED RESUME ANALYSIS</span>
+        </div>
+    </nav>
 
 
-    {% if error %}
+    <!-- UPLOAD PAGE -->
+    <main class="upload-container">
 
-    <h3>Error</h3>
-    <p>{{ error }}</p>
+        <section class="hero">
+            <span class="eyebrow">YOUR CAREER, REIMAGINED</span>
 
-    {% endif %}
+            <h1>Make your resume<br><em>stand out.</em></h1>
+
+            <p>
+                Discover how well your resume matches your dream job.
+                Get intelligent insights and actionable recommendations
+                to improve your chances.
+            </p>
+
+            <div class="ornament">✦ &nbsp; ✦ &nbsp; ✦</div>
+        </section>
 
 
+        <!-- UPLOAD FORM -->
+        <section class="upload-card">
+
+            <div class="form-heading">
+                <span class="eyebrow">GET STARTED</span>
+                <h2>Analyse Your Resume</h2>
+                <p>Upload your resume and provide the job description below.</p>
+            </div>
+
+
+            <form action="/" method="POST" enctype="multipart/form-data">
+
+                <!-- RESUME UPLOAD -->
+                <div class="form-group">
+
+                    <label>UPLOAD YOUR RESUME (PDF)</label>
+
+                    <div class="file-upload">
+
+                        <div class="upload-symbol">↑</div>
+
+                        <p>Choose your resume</p>
+
+                        <span>PDF format only · Maximum size 10 MB</span>
+
+                        <input type="file" name="resume" accept=".pdf,application/pdf" required>
+
+                    </div>
+
+                </div>
+
+
+                <!-- JOB DESCRIPTION -->
+                <div class="form-group">
+
+                    <label>JOB DESCRIPTION</label>
+
+                    <textarea name="job_description" rows="10" placeholder="Paste the complete job description here..."
+                        required></textarea>
+
+                </div>
+
+
+                <!-- SUBMIT BUTTON -->
+                <button type="submit" class="analyse-button">
+                    Analyse My Resume <span>→</span>
+                </button>
+
+            </form>
+
+
+            <!-- ERROR MESSAGE -->
+            {% if error %}
+
+            <div class="error-message">
+                {{ error }}
+            </div>
+
+            {% endif %}
+
+        </section>
+
+
+        <p class="bottom-note">
+            ✦ &nbsp; YOUR INFORMATION IS PROCESSED FOR ANALYSIS
+        </p>
+
+    </main>
+
+
+    <!-- RESULTS PAGE -->
     {% if results %}
 
-    <hr>
+    <main class="results-container">
 
-    <h2>Analysis Results</h2>
+        <section class="page-intro">
+            <span class="eyebrow">YOUR ANALYSIS IS READY</span>
 
-    <h3>Skill Coverage Score</h3>
-    <h2>{{ results.match_score }}%</h2>
+            <h1>Resume <em>Insights.</em></h1>
 
-    <h3>Skills Found in Resume</h3>
-
-    {% for skill in results.resume_skills %}
-    <span>{{ skill }}</span>
-    {% if not loop.last %}, {% endif %}
-    {% else %}
-    <p>No recognised skills found.</p>
-    {% endfor %}
+            <p>
+                Here is how your resume compares with the
+                requirements of the job description.
+            </p>
+        </section>
 
 
-    <h3>Matched Skills</h3>
+        <!-- SKILL COVERAGE SCORE -->
+        <section class="score-card">
 
-    {% for skill in results.matched_skills %}
-    <p>✓ {{ skill }}</p>
-    {% else %}
-    <p>No matching skills found.</p>
-    {% endfor %}
+            <div class="donut-chart" style="--score: {{ results.match_score }}%;">
 
+                <div class="donut-center">
 
-    <h3>Missing Skills</h3>
+                    <strong>{{ results.match_score }}%</strong>
 
-    {% for skill in results.missing_skills %}
-    <p>• {{ skill }}</p>
-    {% else %}
-    <p>No missing skills detected.</p>
-    {% endfor %}
+                    <span>Skill Coverage</span>
+
+                </div>
+
+            </div>
 
 
-    <hr>
+            <div class="score-info">
 
-    <h2>AI Recommendations</h2>
+                <h2>Skill Coverage Score</h2>
 
-    <div style="white-space: pre-wrap;">{{ recommendations }}</div>
+                <p>
+                    Your resume covers {{ results.match_score }}%
+                    of the recognised skills required by this job.
+
+                    This score represents skill coverage, not your
+                    probability of getting hired.
+                </p>
+
+                <div class="score-note">
+                    Based on the skills detected in your resume
+                    and job description.
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- SKILL ANALYSIS -->
+        <section class="skills-section">
+
+            <div class="section-title">
+
+                <span class="eyebrow">SKILL BREAKDOWN</span>
+
+            </div>
+
+
+            <div class="skills-grid">
+
+
+                <!-- SKILLS FOUND -->
+                <div class="skill-card found">
+
+                    <div class="card-number">01</div>
+
+                    <h3>Skills Found</h3>
+
+                    <p class="card-subtitle">
+                        Skills detected in your resume.
+                    </p>
+
+                    <div class="skill-list">
+
+                        {% for skill in results.resume_skills %}
+
+                        <span class="skill-tag">{{ skill }}</span>
+
+                        {% else %}
+
+                        <p class="empty-text">
+                            No recognised skills found.
+                        </p>
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+
+                <!-- MATCHED SKILLS -->
+                <div class="skill-card matched">
+
+                    <div class="card-number">02</div>
+
+                    <h3>Matched Skills</h3>
+
+                    <p class="card-subtitle">
+                        Skills present in both your resume
+                        and the job description.
+                    </p>
+
+                    <div class="skill-list">
+
+                        {% for skill in results.matched_skills %}
+
+                        <span class="skill-tag">{{ skill }}</span>
+
+                        {% else %}
+
+                        <p class="empty-text">
+                            No matching skills found.
+                        </p>
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+
+                <!-- MISSING SKILLS -->
+                <div class="skill-card missing">
+
+                    <div class="card-number">03</div>
+
+                    <h3>Missing Skills</h3>
+
+                    <p class="card-subtitle">
+                        Required skills not detected in your resume.
+                    </p>
+
+                    <div class="skill-list">
+
+                        {% for skill in results.missing_skills %}
+
+                        <span class="skill-tag">{{ skill }}</span>
+
+                        {% else %}
+
+                        <p class="empty-text">
+                            No missing skills detected.
+                        </p>
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- AI RECOMMENDATIONS -->
+        <section class="recommendations">
+
+            <span class="eyebrow">POWERED BY GEMINI AI</span>
+
+            <h2>AI Recommendations</h2>
+
+            <div class="recommendation-content">
+                {{ recommendations }}
+            </div>
+
+        </section>
+
+    </main>
 
     {% endif %}
+
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        ResumAI &nbsp; · &nbsp; AI-Powered Resume Analyzer
+    </footer>
+
+
+    <!-- JAVASCRIPT -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 
 </body>
 
